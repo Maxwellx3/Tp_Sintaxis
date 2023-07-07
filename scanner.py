@@ -65,7 +65,7 @@ class Lexico():
         linea = self.lineas[self.l]
         while self.l < len(self.lineas) and self.posNueva < len(self.lineas[self.l]) and self.lineas[self.l][self.posNueva] == " "  and self.lineas[self.l][self.posNueva] != "\n": #mientras sea espacio o salto de pagina avanza uno, sin salirse del rang
             self.posNueva += 1
-        while self.l < (len(self.lineas)-1) and linea[self.posNueva] == "\n" : #avanza de linea cuando el control se encuentra en un salto de pagina
+        while self.l < (len(self.lineas)-1) and linea[self.posNueva] != ";" : #avanza de linea cuando el control se encuentra un ";" para que salte al encontrar ;
             self.l += 1
             linea = self.lineas[self.l]
             self.posNueva = 0
@@ -85,31 +85,52 @@ class Lexico():
                 compLexico = ESCRIBIR
                     #lexema = ESCRIBIR
             else:
-                if simbolo(linea, self.posNueva):
-                    compLexico = esSimbolo(linea, self.posNueva)
-                    lexema = linea[self.posNueva]
-                    self.posNueva += 1
+                lexema = esLEER(linea, self.posNueva)
+                if lexema != "":
+                    self.posNueva += len(lexema)
+                    compLexico= LEER
+                    #lexema=LEER
                 else:
-                    lexema = esLEER(linea, self.posNueva)
+                    lexema = esSI(linea, self.posNueva)
                     if lexema != "":
                         self.posNueva += len(lexema)
-                        compLexico= LEER
-                            #lexema=LEER
+                        compLexico= SI
                     else:
-                        lexema = esID(linea, self.posNueva)
+                        lexema = esSINO(linea, self.posNueva)
                         if lexema != "":
-                            ts = tsim.actualizarTS(ts, lexema, "0")
-                            self.posNueva += + len(lexema)
-                            compLexico = id
+                            self.posNueva += len(lexema)
+                            compLexico= SINO
                         else:
-                            lexema = esCADENA(linea, self.posNueva)
-                            if lexema != "":
-                                self.posNueva += len(lexema)
-                                compLexico = cadena
-        vector = [compLexico, lexema]
-        if compLexico == ErrorLexico:
-            print("En la linea:", self.l," Posición:",self.posNueva, "se encuentra un error lexico.")
-        return vector
+                            if simbolo(linea, self.posNueva):
+                                compLexico = esSimbolo(linea, self.posNueva)
+                                if compLexico in {menorIgual, mayorIgual, potencia, raiz}:  # Verificar si es <=, >=, ** o */
+                                    self.posNueva += 2  # Avanzar dos posiciones
+                                    if compLexico == menorIgual:
+                                        lexema = "<="
+                                    if compLexico == mayorIgual:
+                                        lexema = ">="
+                                    if compLexico == potencia:
+                                        lexema = "**"
+                                    if compLexico == raiz:
+                                        lexema = "*/"
+                                else:
+                                    lexema = linea[self.posNueva]
+                                    self.posNueva += 1
+                            else:
+                                lexema = esID(linea, self.posNueva)
+                                if lexema != "":
+                                    ts = tsim.actualizarTS(ts, lexema, "0")
+                                    self.posNueva += + len(lexema)
+                                    compLexico = id
+                                else:
+                                    lexema = esCADENA(linea, self.posNueva)
+                                    if lexema != "":
+                                        self.posNueva += len(lexema)
+                                        compLexico = cadena
+                                        vector = [compLexico, lexema]
+                                    if compLexico == ErrorLexico:
+                                        print("En la linea:", self.l," Posición:",self.posNueva, "se encuentra un error lexico.")
+                                        return vector
 
 
 
@@ -132,9 +153,13 @@ def esSimbolo (linea: str, posicion: int)-> str:
     aux = linea[posicion]
     if aux == '=':
         return igual
-    elif aux == '<':        #agregar if para <>, <= y >=, sino agregar un automata para cada uno, BODRIO
+    elif aux == '<':
+        if posicion + 1 < len(linea) and linea[posicion + 1] == '=':
+            return menorIgual        
         return menor
     elif aux == '>':
+        if posicion + 1 < len(linea) and linea[posicion + 1] == '=':
+            return mayorIgual
         return mayor
     elif aux == '+':
         return mas
@@ -142,7 +167,11 @@ def esSimbolo (linea: str, posicion: int)-> str:
         return asignar
     elif aux == '-':
         return menos
-    elif aux == '*':        #agregar if para */ y **, sino agregar un automata para cada uno, BODRIOx2
+    elif aux == '*': 
+        if posicion + 1 < len(linea) and linea[posicion + 1] == '*':
+            return potencia       
+        elif posicion + 1 < len(linea) and linea[posicion + 1] == '/':
+            return raiz
         return por
     elif aux == '/':
         return dividido
@@ -320,6 +349,10 @@ def esLEER(linea: str, posicion: str)-> str:
   delta[4][1] = 5
   delta[4][2] = 5
   delta[4][3] = 5
+  delta[5][0] = 5
+  delta[5][1] = 5
+  delta[5][2] = 5
+  delta[5][3] = 5
   auxControl = posicion
   estado = q0
   lexema = ""
@@ -491,8 +524,72 @@ def esSI (linea: str, posicion: int)-> str:
     else:
         return ""
 
-    #automatas para palabras reservadas??
+def simbSINO(car: str)->int:
+    if car in {"s","S"}:
+        return 0
+    elif car in {"i","I"}:
+        return 1
+    elif car in {"n","N"}:
+        return 2
+    elif car in {"o","O"}:
+        return 3
+    else:
+        return 4
 
+def esSINO (linea: str, posicion: int)-> str:
+    q0 = 0
+    F = {4}
+   # Q = 0..5;
+   # sigma=[(S, I, N, O, otro)]
+    delta = [None] * 6
+    for i in range(6):
+        delta[i] = [None] * 5
+    delta[0][0] = 1
+    delta[0][1] = 5
+    delta[0][2] = 5
+    delta[0][3] = 5
+    delta[0][4] = 5
+    delta[1][0] = 5
+    delta[1][1] = 2
+    delta[1][2] = 5
+    delta[1][3] = 5
+    delta[1][4] = 5
+    delta[2][0] = 5
+    delta[2][1] = 5
+    delta[2][2] = 3
+    delta[2][3] = 5
+    delta[2][4] = 5
+    delta[3][0] = 5
+    delta[3][1] = 5
+    delta[3][2] = 5
+    delta[3][3] = 4
+    delta[3][4] = 5
+    delta[4][0] = 5
+    delta[4][1] = 5
+    delta[4][2] = 5
+    delta[4][3] = 5
+    delta[4][4] = 5
+    delta[5][0] = 5
+    delta[5][1] = 5
+    delta[5][2] = 5
+    delta[5][3] = 5
+    delta[5][4] = 5
+    lexema = ""
+    auxControl = posicion
+    T = arc.leerCaracter(linea, auxControl)
+    estado = q0
+    while (estado != 5) and auxControl < len(linea) and (T != " ") and (T != "\n") and not simbolo(linea, auxControl):
+        estado = delta[estado][simbSINO(T)]
+        lexema = lexema + T
+        auxControl = auxControl + 1
+        T = arc.leerCaracter(linea, auxControl)
+    if estado in F:
+        return lexema
+    else:
+        return ""
+
+
+#sera cadena si esta entre ''
 def simbCAD(car: str)-> int:
   if car == "'":
       return 0
