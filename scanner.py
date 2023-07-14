@@ -13,6 +13,9 @@ mayorIgual = "mayorIgual"
 menorIgual = "menorIgual"
 distinto = "distinto"
 asignar = "asignar"
+opAnd = "opAnd"
+opNeg = "opNeg"
+opOr = "opOr"
 mas = "mas"
 menos = "menos"
 por = "por"
@@ -35,17 +38,21 @@ SINO = "sino"
 real = "real"
 id = "id"
 ErrorLexico = "ErrorLexico"
+G = "G"
+H = "H"
+F = "F"
+K = "K"
+X = "X"
+Y = "Y"
 Z = "Z"
 A = "A"
+B = "B"
+C = "C"
 epsilon = "epsilon"
-Q = "Q"
-H = "H"
-N = "N"
 peso = "peso"
-S= "S"
 
-Terminal = [ESCRIBIR, LEER, MIENTRAS, SI, SINO, parentesisAbre, parentesisCierra, corcheteAbre, corcheteCierra, mas, menos, por, dividido, potencia, raiz, cadena, coma, puntoycoma, id, punto, real, igual, mayor, menor, mayorIgual, menorIgual, distinto, asignar, ErrorLexico, epsilon, peso]
-Variables = [S, A, Q, Z, H, N]
+Terminal = [ESCRIBIR, LEER, MIENTRAS, SI, SINO, parentesisAbre, parentesisCierra, corcheteAbre, corcheteCierra, mas, menos, por, dividido, potencia, raiz, cadena, coma, puntoycoma, id, punto, real, igual, mayor, menor, mayorIgual, menorIgual, distinto, opAnd, opNeg, opOr, asignar, ErrorLexico, epsilon, peso]
+Variables = [G, H, F, K, A, B, C, X, Y, Z]
 
 ######################################################################################################
 ###########################################     LEXICO     ###########################################
@@ -109,10 +116,18 @@ class Lexico():
                                         lexema = "<="
                                     if compLexico == mayorIgual:
                                         lexema = ">="
+                                    if compLexico == distinto:
+                                        lexema = "<>"
                                     if compLexico == potencia:
                                         lexema = "**"
                                     if compLexico == raiz:
                                         lexema = "*/"
+                                    if compLexico == opAnd:
+                                        lexema = "++"
+                                    if compLexico == opNeg:
+                                        lexema = "--"
+                                    if compLexico == opOr:
+                                        lexema = "+-"
                                 else:
                                     lexema = linea[self.posNueva]
                                     self.posNueva += 1
@@ -155,17 +170,25 @@ def esSimbolo (linea: str, posicion: int)-> str:
         return igual
     elif aux == '<':
         if posicion + 1 < len(linea) and linea[posicion + 1] == '=':
-            return menorIgual        
+            return menorIgual   
+        elif posicion +1 < len(linea) and linea[posicion +1] == '>':
+            return distinto     
         return menor
     elif aux == '>':
         if posicion + 1 < len(linea) and linea[posicion + 1] == '=':
             return mayorIgual
         return mayor
     elif aux == '+':
+        if posicion + 1 < len(linea) and linea[posicion + 1] == '-':
+            return opOr
+        elif posicion + 1 < len(linea) and linea[posicion + 1] == '+':
+            return opAnd
         return mas
     elif aux == ':':
         return asignar
     elif aux == '-':
+        if posicion + 1 < len(linea) and linea[posicion + 1] == '-':
+            return opNeg
         return menos
     elif aux == '*': 
         if posicion + 1 < len(linea) and linea[posicion + 1] == '*':
