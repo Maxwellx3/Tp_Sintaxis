@@ -48,11 +48,23 @@ Z = "Z"
 A = "A"
 B = "B"
 C = "C"
+prog = "PROGRAMA"
+sent = "SENTENCIA"
+var = "VAR"
+asig = "ASIGNACION"
+expArit = "EXPARIT"
+ciclo = "CICLO"
+cond = "CONDICION"
+sigCond = "SIGCONDICION"
+condIf = "CONDICIONALIF"
+bloque = "BLOQUE"
+lect = "LECTURA"
+escr = "ESCRITURA"
 epsilon = "epsilon"
 peso = "peso"
 
 Terminal = [ESCRIBIR, LEER, MIENTRAS, SI, SINO, parentesisAbre, parentesisCierra, corcheteAbre, corcheteCierra, mas, menos, por, dividido, potencia, raiz, cadena, coma, puntoycoma, id, punto, real, igual, mayor, menor, mayorIgual, menorIgual, distinto, opAnd, opNeg, opOr, asignar, ErrorLexico, epsilon, peso]
-Variables = [G, H, F, K, A, B, C, X, Y, Z]
+Variables = [G, H, F, K, A, B, C, X, Y, Z, prog, sent, var, asig, expArit, ciclo, cond, sigCond, condIf, bloque, lect, escr]
 
 ######################################################################################################
 ###########################################     LEXICO     ###########################################
