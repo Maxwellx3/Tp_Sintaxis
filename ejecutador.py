@@ -3,42 +3,54 @@ import scanner as s
 import TabladeSimbolos as tsim
 #Semantica
 
-#< S >::= < sentencia > < A >
-def evaluarS(arbol, ts):
+#<Programa> ::= <Sentencia> <G>
+def evaluarPrograma(arbol, ts):
     evaluarSentencia(arbol.hijos[0], ts)
-    evaluarA(arbol.hijos[1], ts)
+    evaluarG(arbol.hijos[1], ts)
 
-#< A >::= 	 ; < sentencia> <A> | ε
-def evaluarA(arbol ,ts):
+#<G> ::= ";" <Sentencia> <G> | ε
+def evaluarG(arbol, ts):
     if len(arbol.hijos)>=1 and  arbol.hijos[0].getDato()==s.puntoycoma:
-        evaluarSentencia(arbol.hijos[1] ,ts)
-        evaluarA(arbol.hijos[2] ,ts)
+        evaluarSentencia(arbol.hijos[1], ts)
+        evaluarG(arbol.hijos[2], ts)
 
-#<sentencia> ::=        leer(cadena, id) | escribir(texto, < expr_arit_c > < H > < N > ) | id = < expr_arit_c > < H > < N >
+#<Sentencia> ::= <Var> | <Ciclo> | <CondicionalIf> | <Lectura> | <Escritura>
 def evaluarSentencia(arbol, ts):
-    if len(arbol.hijos)>=1 and  arbol.hijos[0].getDato()== s.LEER:
-        if len(arbol.hijos[2].hijos) == 1:
-            print(arbol.hijos[2].hijos[0].getDato())
-        aux = input()
-        tsim.actualizarTS(ts,arbol.hijos[4].hijos[0].getDato(), aux)
-    elif len(arbol.hijos)>=1 and  arbol.hijos[0].getDato() == s.ESCRIBIR:
-        if len(arbol.hijos[2].hijos) == 1:
-            print(arbol.hijos[2].hijos[0].getDato())
-        res = evaluarExprArit(arbol.hijos[4], ts)
-        res = evaluarH(arbol.hijos[5], ts, res)
-        res = evaluarN(arbol.hijos[6], ts, res)
-        print(res)
-    else:
-        res = evaluarExprArit(arbol.hijos[2], ts)
-        res = evaluarH(arbol.hijos[3], ts, res)
-        res = evaluarN(arbol.hijos[4], ts, res)
-        tsim.actualizarTS(ts,arbol.hijos[0].hijos[0].getDato(), str(res))
+    if len(arbol.hijos)>=1 and  arbol.hijos[0].getDato() == s.var:
+        evaluarVar(arbol.hijos[0],ts)
+    elif len(arbol.hijos)>=1 and  arbol.hijos[0].getDato() == s.ciclo:
+        evaluarCiclo(arbol.hijos[0],ts)
+    elif len(arbol.hijos)>=1 and  arbol.hijos[0].getDato() == s.condIf:
+        evaluarCondIf(arbol.hijos[0],ts)
+    elif len(arbol.hijos)>=1 and  arbol.hijos[0].getDato() == s.lect:
+        evaluarLect(arbol.hijos[0],ts)
+    elif len(arbol.hijos)>=1 and  arbol.hijos[0].getDato() == s.escr:
+        evaluarEscr(arbol.hijos[0],ts)
 
-#< N >::=        + < expr_arit_c > < H > < N > | - < expr_arit_c > < H > < N > | ε
+#<Var> ::= "id" <Asignación>
+def evaluarVar(arbol, ts):
+    res = evaluarAsig(arbol.hijos[1], ts)
+    tsim.actualizarTS(ts,arbol.hijos[0].hijos[0].getDato(), str(res))
 
+#<Asignación> ::= ":" <ExpArit> | "," "id" <Asignación>
+def evaluarAsig(arbol, ts):
+    if len(arbol.hijos)>=1 and arbol.hijos[0].getDato() == s.asignar:
+        res = evaluarExprArit(arbol.hijos[1], ts)
+        return res
+    elif len(arbol.hijos)>=1 and arbol.hijos[0].getDato() == s.coma:
+        res = evaluarAsig(arbol.hijos[2], ts)
+        tsim.actualizarTS(ts,arbol.hijos[1].hijos[0].getDato(), str(res))
+
+#<ExpArit> ::= <A> <X>
+def evaluarExprArit(arbol, ts):
+    res = evaluarA(arbol.hijos[0], ts)
+    res = evaluarX(arbol.hijos[1], ts, res)
+    return res
+
+#<X> ::= "+" <A> <X> | "-" <A> <X> | ε *falta
 def evaluarN(arbol, ts, res):
     if len(arbol.hijos)>=1 and arbol.hijos[0].getDato() == s.mas:
-        res1 = evaluarExprArit(arbol.hijos[1], ts)
+        res1 = evaluarA(arbol.hijos[1], ts)
         res2 = evaluarH(arbol.hijos[2], ts, res1)
         res = res + evaluarN(arbol.hijos[3], ts, res2)
     elif len(arbol.hijos)>=1 and  arbol.hijos[0].getDato() == s.menos:
@@ -47,30 +59,45 @@ def evaluarN(arbol, ts, res):
         res = res - evaluarN(arbol.hijos[3], ts, res2)
     return res
 
-#< H >::= * < expr_arit_c > < H > | / < expr_ar1it_c > < H > | ε
-def evaluarH(arbol, ts, res: int):
-    if len(arbol.hijos)>=1 and arbol.hijos[0].getDato() == s.por:
-        res1 = evaluarExprArit(arbol.hijos[1], ts)
-        res = res * evaluarH(arbol.hijos[2], ts, res1)
-    elif len(arbol.hijos)>=1  and arbol.hijos[0].getDato() == s.dividido:
-        res2 = evaluarExprArit(arbol.hijos[1], ts)
-        res = res /evaluarH(arbol.hijos[2], ts, res2)
+#<A> ::= <B> <Y>
+def evaluarA(arbol, ts):
+    res = evaluarB(arbol.hijos[0], ts)
+    res = evaluarY(arbol.hijos[1], ts, res)
     return res
 
-#< expr_arit_c >::=    id | const | ( < expr_arit_c > < H > < N >)
-def evaluarExprArit(arbol, ts):
-    if len(arbol.hijos)>=1 and arbol.hijos[0].getDato() == s.id:
-        return float(tsim.devolverIdDato(ts, arbol.hijos[0].hijos[0].getDato()))
-    elif len(arbol.hijos)>=1 and arbol.hijos[0].getDato() == s.real:
-        return float(arbol.hijos[0].hijos[0].getDato())
-    elif len(arbol.hijos)>=1 and arbol.hijos[0].getDato() == s.parentesisAbre:
-        res = evaluarExprArit(arbol.hijos[1], ts)
-        res = evaluarH(arbol.hijos[2], ts, res)
-        res = evaluarN(arbol.hijos[3], ts, res)
-        return res
+#<Y> ::= "*" <B> <Y> | "/" <B> <Y> | ε
 
+#<B> ::= <C> <Z>
+def evaluarB(arbol, ts):
+    res = evaluarC(arbol.hijos[0], ts)
+    res = evaluarZ(arbol.hijos[1], ts, res)
+    return res
+
+#<Z> ::= "**" <C> <Z> | "*/" <C> <Z> | ε
+
+#<C> ::= "(" <ExpArit> ")" | "real" | "id"
+
+#<Ciclo> ::= "mientras" <Condición> <Bloque>
+
+#<Condición> ::= <SigCondición> <K>
+
+#<SigCondición> ::= <ExpArit> <J> | "--" <SigCondición>
+
+#<K> ::= "+-" <SigCondición> <K> | "++" <SigCondición> <K> | ε
+
+#<J> ::= "<>" <ExpArit> | "=" <ExpArit> | "<" <ExpArit> | ">" <ExpArit> | "<=" <ExpArit> | ">=" <ExpArit>
+
+#<CondicionalIf> ::= "si" <Condición> <Bloque> <F>
+
+#<F> ::= "sino" <Bloque> | ε
+
+#<Bloque> ::= "[" <Programa> "]"
+
+#<Lectura> ::= "leer" "(" "cadena" "," "id" ")"
+
+#<Escritura> ::= "escribir" "(" "cadena" "," <ExpArit> ")"
 
 archivoAEjecutar = str(input("Ingrese direccion del archivo a ejecutar: \n"))
 sint = p.AnalizadorSintactico(archivoAEjecutar) #crea el Analizador Sintactico
 arb = sint.analizarSintactico() #Analiza sintacticamente obteniendo un arbol
-evaluarS(arb,sint.tablaSimbolos)  #evalua la raiz con el arbol obtenido y la tabla de simbolos del Analizador Sintactico
+evaluarS(arb,sint.tablaSimbolos)  #evalua la raiz con el arbol obtenido y la tabla de simbolos del Analizador Sintactico 

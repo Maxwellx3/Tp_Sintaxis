@@ -84,7 +84,7 @@ class Lexico():
         linea = self.lineas[self.l]
         while self.l < len(self.lineas) and self.posNueva < len(self.lineas[self.l]) and self.lineas[self.l][self.posNueva] == " "  and self.lineas[self.l][self.posNueva] != "\n": #mientras sea espacio o salto de pagina avanza uno, sin salirse del rang
             self.posNueva += 1
-        while self.l < (len(self.lineas)-1) and linea[self.posNueva] != ";" : #avanza de linea cuando el control se encuentra un ";" para que salte al encontrar ;
+        while self.l < (len(self.lineas)-1) and linea[self.posNueva] == "/n" : #avanza de linea cuando el control se encuentra un ";" para que salte al encontrar ;
             self.l += 1
             linea = self.lineas[self.l]
             self.posNueva = 0
