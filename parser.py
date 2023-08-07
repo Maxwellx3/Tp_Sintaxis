@@ -4,9 +4,9 @@
 
 import scanner as lex
 import TAS as tas
-import Arbol as ar
-import Pila as p
-import TabladeSimbolos as ts
+import arbol as ar
+import pila as p
+import tablaDeSimbolos as ts
 
 
 Terminal = lex.Terminal
@@ -16,11 +16,11 @@ Variables = lex.Variables
 class AnalizadorSintactico():
     def __init__(self, archivoAEjecutar):
         self.tablaSimbolos = ts.crearTS() #crea la tabla de simbolos
-        self.arbol = ar.Nodo(lex.S) #crea el arbol con raiz S
+        self.arbol = ar.Nodo(lex.prog) #crea el arbol con raiz S
         self.pila = p.Pila() #crea pila para apilar lo que contiene un vector de la tas
         self.pila2= p.Pila() #crea pila para apilar el nodo del arbol en el que se encuentra un elemento apilado de la primer pila
         self.pila.push(lex.peso)  # apilamos el simbolo final
-        self.pila.push(lex.S) # apilamos primer Variable
+        self.pila.push(lex.prog) # apilamos primer Variable
         self.pila2.push(self.arbol)  #apilamos raiz
         self.nodoActual = self.arbol  # el nodo inicial es la raiz
         self.archivo = open(archivoAEjecutar)
@@ -40,7 +40,7 @@ class AnalizadorSintactico():
                 resultado = 1 #proceso terminado con exito
             elif X in Terminal: #si X es terminal
                 if X == a[0]: #y es el componente lexico leido
-                    self.nodoActual.agregarHijo(ar.Nodo(a[1])) #se agrega como hijo al nodo actual
+                    self.nodoActual.agregarHijo(ar.Nodo(a[1])) #se agrega como hijo al nodo actual *revisar*
                     a = self.Lexico.siguienteComponenteLexico(self.tablaSimbolos) #y se obtiene el siguiente componente
                 else:
                     resultado = -1 #error
