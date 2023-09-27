@@ -146,7 +146,11 @@ class Lexico():
                             else:
                                 lexema = esID(linea, self.posNueva)
                                 if lexema != "":
-                                    ts = tsim.actualizarTS(ts, lexema, "0")
+                                    if lexema in ts:
+                                        case
+                                    posicion_actual = 6    
+                                    ts = tsim.actualizarTS(ts, lexema, str(posicion_actual))
+                                    posicion_actual += 1
                                     self.posNueva += + len(lexema)
                                     compLexico = id
                                 else:

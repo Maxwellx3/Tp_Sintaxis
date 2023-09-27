@@ -1,4 +1,4 @@
-import parser as p
+import parser_1 as p
 import scanner as s
 import tablaDeSimbolos as tsim
 #Semantica

@@ -2,7 +2,14 @@
 #########################################  TABLA DE SIMBOLOS  #########################################
 #######################################################################################################
 def crearTS():  #crea la tabla de simbolo que es un diccionario
-    ts = {}
+    ts = {
+        "id1": "leer",
+        "id2": "escribir",
+        "id3": "var",
+        "id4": "mientras",
+        "id5": "si",
+        "id6": "sino"
+    }
     return ts
 
 def devolverIdDato(ts, id: str): #devuelve el valor del correspondiente id en la diccionario si se encuentra

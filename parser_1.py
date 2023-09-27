@@ -8,7 +8,6 @@ import arbol as ar
 import pila as p
 import tablaDeSimbolos as ts
 
-
 Terminal = lex.Terminal
 Variables = lex.Variables
 
