@@ -750,8 +750,6 @@ peso = s.peso
 # cTAS[21][30] = []
 
 
-
-
 # Crea un DataFrame a partir de las reglas
 df = pd.read_csv (r"C:\Users\mache\OneDrive\Documentos\sintaxisTAS\TAS.csv")
 

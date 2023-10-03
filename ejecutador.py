@@ -14,7 +14,7 @@ def evaluarG(arbol, ts):
         evaluarSentencia(arbol.hijos[1], ts)
         evaluarG(arbol.hijos[2], ts)
 
-#<Sentencia> ::= <Var> | <Ciclo> | <CondicionalIf> | <Lectura> | <Escritura>
+#<Sentencia> ::= "var"<Var> | <Ciclo> | <CondicionalIf> | <Lectura> | <Escritura>
 def evaluarSentencia(arbol, ts):
     if len(arbol.hijos)>=1 and  arbol.hijos[0].getDato() == s.var:
         evaluarVar(arbol.hijos[0],ts)
@@ -27,7 +27,7 @@ def evaluarSentencia(arbol, ts):
     elif len(arbol.hijos)>=1 and  arbol.hijos[0].getDato() == s.escr:
         evaluarEscr(arbol.hijos[0],ts)
 
-#<Var> ::= "id" <Asignación>
+#<Var> ::= "id"<H>
 def evaluarVar(arbol, ts):
     res = evaluarAsig(arbol.hijos[1], ts)
     tsim.actualizarTS(ts,arbol.hijos[0].hijos[0].getDato(), str(res))
@@ -57,7 +57,7 @@ def evaluarX(arbol, ts, res):
         res = res - evaluarX(arbol.hijos[2], ts, res1)
     return res
 
-#<A> ::= <B> <Y>
+#<A> ::= <B> <Y> 
 def evaluarA(arbol, ts):
     res = evaluarB(arbol.hijos[0], ts)
     res = evaluarY(arbol.hijos[1], ts, res)
@@ -89,7 +89,7 @@ def evaluarZ(arbol, ts, res):
         res =  math.sqrt(evaluarZ(arbol.hijos[2], ts, res1))
     return res
 
-#<C> ::= "(" <ExpArit> ")" | "real" | "id"
+# <C> ::= "(" <ExpArit> ")" | "real" | "id" | “-” <C>
 def evaluarC(arbol, ts):
     if len(arbol.hijos)>=1 and arbol.hijos[0].getDato() == s.id:
         return float(tsim.devolverIdDato(ts, arbol.hijos[0].hijos[0].getDato()))
@@ -103,7 +103,7 @@ def evaluarC(arbol, ts):
 
 #<Condición> ::= <SigCondición> <K>
 
-#<SigCondición> ::= <ExpArit> <J> | "--" <SigCondición>
+#<SigCondición> ::= <ExpArit> "opRel" <ExpArit> | "--" <SigCondición> | “{“ <Condicion> ”}”
 
 #<K> ::= "+-" <SigCondición> <K> | "++" <SigCondición> <K> | ε
 

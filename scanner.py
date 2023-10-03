@@ -50,7 +50,7 @@ B = "B"
 C = "C"
 prog = "PROGRAMA"
 sent = "SENTENCIA"
-var = "VAR"
+varia = "VAR"
 asig = "ASIGNACION"
 expArit = "EXPARIT"
 ciclo = "CICLO"
@@ -64,7 +64,7 @@ epsilon = "epsilon"
 peso = "peso"
 
 Terminal = [ESCRIBIR, LEER, MIENTRAS, SI, SINO, parentesisAbre, parentesisCierra, corcheteAbre, corcheteCierra, mas, menos, por, dividido, potencia, raiz, cadena, coma, puntoycoma, id, punto, real, igual, mayor, menor, mayorIgual, menorIgual, distinto, opAnd, opNeg, opOr, asignar, ErrorLexico, epsilon, peso]
-Variables = [G, F, K, A, B, C, X, Y, Z, prog, sent, var, asig, expArit, ciclo, cond, sigCond, condIf, bloque, lect, escr]
+Variables = [G, F, K, A, B, C, X, Y, Z, prog, sent, varia, asig, expArit, ciclo, cond, sigCond, condIf, bloque, lect, escr]
 
 ######################################################################################################
 ###########################################     LEXICO     ###########################################
