@@ -68,11 +68,10 @@
 #     #                     i -= 1 #se descuenta contador
 #     #     return self.arbol #se devuelve el arbol
 
-
 import scanner as lex
 import arbol as ar
 import pila as p
-import tablaDeSimbolos as ts
+import tablaDeSimbolos as ts 
 import pandas as pd
 
 class AnalizadorSintactico:
@@ -122,16 +121,16 @@ class AnalizadorSintactico:
         while resultado == 0:
             X = self.pila.popp()  # Desapila
 
-            if X == lex.peso == self.Lexico.componenteLexico:
+            if X == lex.peso == self.Lexico.compLexico:
                 resultado = 1  # Proceso terminado con éxito
-            elif X in self.TAS and self.Lexico.componenteLexico in self.TAS[X]:
-                regla = self.TAS[X][self.Lexico.componenteLexico]
+            elif X in self.TAS and self.Lexico.compLexico in self.TAS[X]:
+                regla = self.TAS[X][self.Lexico.compLexico]
                 for simbolo in reversed(regla):
                     if simbolo != lex.epsilon:
                         self.pila.push(simbolo)
 
                     if simbolo in lex.Terminal:
-                        if simbolo == self.Lexico.componenteLexico:
+                        if simbolo == self.Lexico.compLexico:
                             self.nodoActual.agregarHijo(ar.Nodo(self.Lexico.lexema))
                             self.Lexico.siguienteComponenteLexico(self.tablaSimbolos)
                         else:
