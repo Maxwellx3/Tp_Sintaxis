@@ -156,8 +156,70 @@ def simbolo (linea: str, posicion: int)-> bool:
         simb = True
     return simb
 
-# devuelve el tipo de componente lexico del simbolo
-def esSimbolo (linea: str, posicion: int)-> str:
+def simbolo1(linea: str, posicion: int) -> bool:
+    simb = False
+    aux = arc.leerCaracter(linea, posicion)
+    if aux in {'=', '+', '*', '/', ';', ',', '(', ')', '[', ']'}:
+        simb = True
+    return simb
+
+def simboloID(aux: str) -> int:
+    if aux in string.ascii_letters:
+        return 0
+    elif aux in string.digits:
+        return 1
+    elif aux == "_":
+        return 2
+    else:
+        return 3
+
+def simbCONS(Car: str) -> int:
+    if Car in string.digits:
+        return 0
+    elif Car == '-':
+        return 1
+    elif Car == '.':
+        return 2
+    else:
+        return 3
+
+def simbCAD(car: str) -> int:
+    if car == "'":
+        return 0
+    else:
+        return 1
+
+def esCADENA(linea: str, pos: int) -> str:
+    q0 = 0
+    F = [2]
+    delta = [None] * 4
+    for i in range(4):
+        delta[i] = [None] * 2
+    delta[0][0] = 1
+    delta[0][1] = 3
+    delta[1][0] = 2
+    delta[1][1] = 1
+    delta[2][0] = 3
+    delta[2][1] = 3
+    delta[3][0] = 3
+    delta[3][1] = 3
+    auxControl = pos
+    estado = q0
+    lexema = ''
+    T = arc.leerCaracter(linea, auxControl)
+    while estado != 3  and auxControl < len(linea)  and T!="\n" and (estado not in F):
+        estado = delta[estado][simbCAD(T)]
+        if estado != 3:
+            lexema = lexema + T
+            auxControl = auxControl + 1
+            T = arc.leerCaracter(linea, auxControl)
+    if estado in F:
+        pos = auxControl
+        return lexema
+    else:
+        return ""
+
+def esSimbolo(linea: str, posicion: int) -> str:
     aux = linea[posicion]
     if aux == '=':
         return "igual"
@@ -184,7 +246,7 @@ def esSimbolo (linea: str, posicion: int)-> str:
             return opNeg
         return menos
     elif aux == '*': 
-        if posicion + 1 < len(linea) and linea[posicion + 1] == '*':
+        if posicion  + 1 < len(linea) and linea[posicion + 1] == '*':
             return potencia       
         elif posicion + 1 < len(linea) and linea[posicion + 1] == '/':
             return raiz
