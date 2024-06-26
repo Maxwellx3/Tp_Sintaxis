@@ -14,63 +14,68 @@ operadores_relacionales = {
     "menor": 1,
     "mayor": 1,
 }
-asignar = "asignar"
-opAnd = "opAnd"
-opNeg = "opNeg"
-opOr = "opOr"
-opRel = "opRel"
-mas = "mas"
-menos = "menos"
-por = "por"
-dividido = "dividido"
-potencia = "potencia"
-raiz = "raiz"
-puntoycoma= "puntoycoma"
-coma = "coma"
-punto = "punto"
-parentesisAbre = "parentesisAbre"
-parentesisCierra = "parentesisCierra"
-corcheteAbre = "corcheteAbre"
-corcheteCierra = "corcheteCierra"
-llaveAbre = "llaveAbre"
-llaveCierra = "llaveCierra"
-cadena = "cadena"
-LEER = "leer"
-ESCRIBIR = "escribir"
-MIENTRAS = "mientras"
-SI = "si"
-SINO = "sino"
-real = "real"
-id = "id"
-ErrorLexico = "ErrorLexico"
-G = "G"
-J = "J"
-F = "F"
-K = "K"
-X = "X"
-Y = "Y"
-Z = "Z"
-A = "A"
-B = "B"
-C = "C"
-prog = "PROGRAMA"
-sent = "SENTENCIA"
-varia = "VAR"
-asig = "ASIGNACION"
-expArit = "EXPARIT"
-ciclo = "CICLO"
-cond = "CONDICION"
-sigCond = "SIGCONDICION"
-condIf = "CONDICIONALIF"
-bloque = "BLOQUE"
-lect = "LECTURA"
-escr = "ESCRITURA"
-epsilon = "epsilon"
-peso = "peso"
+# #Terminales
+# asignar = "asignar"
+# opAnd = "opAnd"
+# opNeg = "opNeg"
+# opOr = "opOr"
+# opRel = "opRel"
+# mas = "mas"
+# menos = "menos"
+# por = "por"
+# dividido = "dividido"
+# potencia = "potencia"
+# raiz = "raiz"
+# puntoycoma= "puntoycoma"
+# coma = "coma"
+# punto = "punto"
+# parentesisAbre = "parentesisAbre"
+# parentesisCierra = "parentesisCierra"
+# corcheteAbre = "corcheteAbre"
+# corcheteCierra = "corcheteCierra"
+# llaveAbre = "llaveAbre"
+# llaveCierra = "llaveCierra"
+# cadena = "cadena"
+# LEER = "leer"
+# ESCRIBIR = "escribir"
+# MIENTRAS = "mientras"
+# SI = "si"
+# SINO = "sino"
+# real = "real"
+# id = "id"
+# ErrorLexico = "ErrorLexico"
 
-Terminal = [ESCRIBIR, LEER, MIENTRAS, SI, SINO, parentesisAbre, parentesisCierra, corcheteAbre, corcheteCierra, llaveAbre, llaveCierra, mas, menos, por, dividido, potencia, raiz, cadena, coma, puntoycoma, id, punto, real, opRel, opAnd, opNeg, opOr, asignar, ErrorLexico, epsilon, peso]
-Variables = [G, F, K, A, B, C, X, Y, Z, prog, sent, varia, asig, expArit, ciclo, cond, sigCond, condIf, bloque, lect, escr]
-#Variables = [G, F, K, H, A, B, C, X, Y, Z, prog, sent, variable, asig, expArit, ciclo, cond, sigCond, condIf, bloque, lect, escr]
+# #Variables
+# G = "G"
+# H = "H"
+# J = "J"
+# F = "F"
+# K = "K"
+# X = "X"
+# Y = "Y"
+# Z = "Z"
+# A = "A"
+# B = "B"
+# C = "C"
+# prog = "PROGRAMA"
+# sent = "SENTENCIA"
+# variable = "VAR"
+# asing = "ASIGNACION"
+# expArit = "EXPARIT"
+# ciclo = "CICLO"
+# cond = "CONDICION"
+# sigCond = "SIGCONDICION"
+# condIf = "CONDICIONALIF"
+# bloque = "BLOQUE"
+# lect = "LECTURA"
+# escr = "ESCRITURA"
+# epsilon = "epsilon"
+# peso = "peso"
+
+Terminal = ['puntoycoma', 'asignar', 'coma', 'id', 'real', 'var', 'mientras', 'si', 'sino', 'leer', 'escribir', 'cadena', 'mas', 'menos', 'por', 'dividido', 'potencia', 'raiz', 'parentesisAbre', 'parentesisAbre', 'corcheteAbre', 'corcheteCierra', 'llaveAbre', 'llaveCierra', 'opOr', 'opAnd', 'opNeg', 'opRel', 'peso']
+
+Variables = ['prog', 'G', 'sent', 'variable', 'H', 'asing', 'expArit', 'X', 'A', 'Y', 'B', 'Z', 'C', 'ciclo', 'cond', 'sigCond', 'K', 'condIf', 'F', 'bloque', 'lect', 'escr']             
+
 
 ######################################################################################################
 ###########################################     LEXICO     ###########################################
@@ -85,7 +90,7 @@ class Lexico():
         self.l = 0 #guarda la linea actual
 
     def siguienteComponenteLexico(self,ts): #devuelve componente lexico, y lexema
-        compLexico = ErrorLexico
+        compLexico = 'ErrorLexico'
         lexema = ""
         linea = self.lineas[self.l]
         ts = tsim.crearTS()
@@ -101,13 +106,13 @@ class Lexico():
 
         # Si estamos al final del archivo, devolver el token de peso
         if not (self.l < (len(self.lineas) - 1)) and not(self.posNueva < len(self.lineas[self.l])):
-            vector = [peso, "$"]
+            vector = ['peso', "$"]
             return vector
 
         lexema = esConstReal(linea, self.posNueva)
         if lexema != "":
             self.posNueva += len(lexema) #suma a la posicion el tamaño del lexema
-            compLexico = real
+            compLexico = 'real'
         else:
             if simbolo(linea, self.posNueva):
                 compLexico = esSimbolo(linea, self.posNueva)
@@ -119,7 +124,7 @@ class Lexico():
                     lexema = linea[self.posNueva]
                     self.posNueva += 1
                 if compLexico in operadores_relacionales:
-                    compLexico = opRel
+                    compLexico = 'opRel'
             else:
                 lexema = esID(linea, self.posNueva)
                 if lexema != "":
@@ -129,13 +134,13 @@ class Lexico():
                     else:
                         ts = tsim.actualizarTS(ts, lexema, len(ts))
                         self.posNueva += len(lexema)
-                        compLexico = id
+                        compLexico = 'id'
                 else:
                     lexema = esCADENA(linea, self.posNueva)
                     if lexema != "":
                         self.posNueva += len(lexema)
-                        compLexico = cadena
-                    if compLexico == ErrorLexico:
+                        compLexico = 'cadena'
+                    if compLexico == 'ErrorLexico':
                         print("En la linea:", self.l," Posición:",self.posNueva, "se encuentra un error lexico.")
         vector = [compLexico, lexema]
         return vector
@@ -235,42 +240,42 @@ def esSimbolo(linea: str, posicion: int) -> str:
         return "mayor"
     elif aux == '+':
         if posicion + 1 < len(linea) and linea[posicion + 1] == '-':
-            return opOr
+            return 'opOr'
         elif posicion + 1 < len(linea) and linea[posicion + 1] == '+':
-            return opAnd
-        return mas
+            return 'opAnd'
+        return 'mas'
     elif aux == ':':
-        return asignar
+        return 'asignar'
     elif aux == '-':
         if posicion + 1 < len(linea) and linea[posicion + 1] == '-':
-            return opNeg
-        return menos
+            return 'opNeg'
+        return 'menos'
     elif aux == '*': 
         if posicion  + 1 < len(linea) and linea[posicion + 1] == '*':
-            return potencia       
+            return 'potencia'       
         elif posicion + 1 < len(linea) and linea[posicion + 1] == '/':
-            return raiz
-        return por
+            return 'raiz'
+        return 'por'
     elif aux == '/':
-        return dividido
+        return 'dividido'
     elif aux == ";":
-        return puntoycoma
+        return 'puntoycoma'
     elif aux == ",":
-        return coma
+        return 'coma'
     elif aux == '.':
-        return punto
+        return 'punto'
     elif aux == "(":
-        return parentesisAbre
+        return 'parentesisAbre'
     elif aux == ")":
-        return parentesisCierra
+        return 'parentesisCierra'
     elif aux == "[":
-        return corcheteAbre
+        return 'corcheteAbre'
     elif aux == "]":
-        return corcheteCierra
+        return 'corcheteCierra'
     elif aux == "{":
-        return llaveAbre
+        return 'llaveAbre'
     elif aux == "}":
-        return llaveCierra
+        return 'llaveCierra'
     else:
         return ""
 

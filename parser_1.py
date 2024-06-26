@@ -75,7 +75,8 @@ import tablaDeSimbolos as ts
 import pandas as pd
 
 class AnalizadorSintactico:
-    ARCHIVO_TAS = r"C:\Users\mache\OneDrive\Documentos\sintaxisTAS\TAS.csv"  # Ruta fija del archivoTAS
+    ARCHIVO_TAS = r"D:\Facu\Sintaxis\Tp_Sintaxis\CSVTAS.csv"  # Ruta fija del archivoTAS
+    
 
     def __init__(self, archivoAEjecutar):
         """
@@ -84,10 +85,10 @@ class AnalizadorSintactico:
         :param archivoAEjecutar: Ruta al archivo a ejecutar.
         """
         self.tablaSimbolos = ts.crearTS()  # Crea la tabla de símbolos
-        self.arbol = ar.Nodo(lex.prog)  # Crea el árbol con raíz S
+        self.arbol = ar.Nodo('prog')  # Crea el árbol con raíz S
         self.pila = p.Pila()  # Crea una sola pila para apilar lo que contiene un vector de la TAS
-        self.pila.push(lex.peso)  # Apilamos el símbolo final
-        self.pila.push(lex.prog)  # Apilamos la primera Variable
+        self.pila.push('peso')  # Apilamos el símbolo final
+        self.pila.push('prog')  # Apilamos la primera Variable
         self.nodoActual = self.arbol  # El nodo actual es la raíz
         self.archivo = open(archivoAEjecutar)
         self.Lexico = lex.Lexico(self.archivo)  # Creación del analizador léxico
@@ -98,16 +99,15 @@ class AnalizadorSintactico:
     def cargarTAS(self):
         try:
             # Cargar el archivo CSV con la TAS (ruta fija)
-            df = pd.read_csv(self.ARCHIVO_TAS)
-
+            df = pd.read_csv(self.ARCHIVO_TAS, header=None)
+            componente_lexico = df.iloc[0, 1:].tolist()
+            variable = df.iloc[1:, 0].tolist()
             # Crear un diccionario de reglas de la TAS
             tas_dict = {}
-            for index, row in df.iterrows():
-                variable = row['Variable']
-                componente_lexico = row['ComponenteLexico']
-                regla = row['Regla']
-                tas_dict[(variable, componente_lexico)] = regla.split(',')
-
+            for var in range(len(variable)):
+                for lex in range(1, len(componente_lexico) + 1):
+                    regla = df.iloc[var + 1, lex]
+                    tas_dict[(variable[var], componente_lexico[lex - 1])] = regla
             return tas_dict
         except Exception as e:
             print(f"Error al cargar la TAS desde el archivo: {e}")
@@ -117,25 +117,47 @@ class AnalizadorSintactico:
 
     def analizarSintactico(self):
         resultado = 0  # resultado = 0 indica que el analizador Sintáctico debe seguir analizando
-
+        token = self.Lexico.siguienteComponenteLexico({})
         while resultado == 0:
             X = self.pila.popp()  # Desapila
 
-            if X == lex.peso == self.Lexico.compLexico:
+            if X == 'peso' == token[0]:
                 resultado = 1  # Proceso terminado con éxito
-            elif X in self.TAS and self.Lexico.compLexico in self.TAS[X]:
-                regla = self.TAS[X][self.Lexico.compLexico]
-                for simbolo in reversed(regla):
-                    if simbolo != lex.epsilon:
-                        self.pila.push(simbolo)
+            elif X in lex.Terminal:
+                if X == token[0]:
+                    padre_actual = self.nodoActual.getPadre()
+                    if padre_actual and self.nodoActual != padre_actual.hijos[0]:
+                        indice_hijo_actual = padre_actual.hijos.index(self.nodoActual)
+                        self.nodoActual = padre_actual.hijos[indice_hijo_actual - 1]
+                    token = self.Lexico.siguienteComponenteLexico({})
+                else:
+                    print("Error sintáctico")
+                    resultado = -1  # Error
+            elif X in lex.Variables:
+                v = reversed(self.TAS(X, token[0]))
+                if pd.isna(v):
+                    print("Error sintáctico")
+                    resultado = -1  # Error
+                else:
+                    for dato in v:
+                        nodo_hijo = ar.Nodo(dato)
+                        self.nodoActual.agregarHijo(nodo_hijo)
+                    self.pila.push(v)
+                    self.nodoActual = self.nodoActual.getHijos()[-1]
+            # elif any(X in key and token[0] in key for key in self.TAS.keys):
+            #     regla = self.TAS[(X, token[0])]
+            #     for simbolo in reversed(regla):
+            #         if simbolo != 'epsilon':
+            #             self.pila.push(simbolo)
 
-                    if simbolo in lex.Terminal:
-                        if simbolo == self.Lexico.compLexico:
-                            self.nodoActual.agregarHijo(ar.Nodo(self.Lexico.lexema))
-                            self.Lexico.siguienteComponenteLexico(self.tablaSimbolos)
-                        else:
-                            print("Error sintáctico")
-                            resultado = -1  # Error
-                    elif simbolo in lex.Variables:
-                        self.nodoActual.agregarHijo(ar.Nodo(simbolo))
-                        self.nodoActual = self.nodoActual.getHijos()[-1]
+            #         if simbolo in lex.Terminal:
+            #             if simbolo == token[0]:
+            #                 self.nodoActual.agregarHijo(ar.Nodo(self.Lexico.lexema))
+            #                 token = self.Lexico.siguienteComponenteLexico({})
+
+            #             else:
+            #                 print("Error sintáctico")
+            #                 resultado = -1  # Error
+            #         elif simbolo in lex.Variables:
+            #             self.nodoActual.agregarHijo(ar.Nodo(simbolo))
+            #             self.nodoActual = self.nodoActual.getHijos()[-1]
