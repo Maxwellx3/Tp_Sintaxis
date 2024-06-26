@@ -37,5 +37,13 @@ componente_lexico_buscar = 'id'
 variable_buscar = 'A'
 if (variable_buscar, componente_lexico_buscar) in tas_dict:
     regla1= tas_dict[(variable_buscar, componente_lexico_buscar)]
-    prim_letra= regla1[0]
-    print(prim_letra)
+    if pd.isna(regla1):
+        print('Es vacio')
+    else:
+        prim_letra= regla1[0]
+        print(prim_letra)
+
+# if any('prog' in key for key in tas_dict.keys()):
+#     print('Asi es')
+# else:
+#     print('Asi no es')

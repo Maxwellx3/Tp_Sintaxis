@@ -13,7 +13,11 @@ class Pila:
             return False
 
     def push(self, objeto):  # apilar
-        self.lista.append(objeto)
+        if isinstance(objeto, list):
+            for elemento in objeto:
+                self.lista.append(elemento)
+        else:
+            self.lista.append(objeto)
 
 
     def popp(self):   # desapila
