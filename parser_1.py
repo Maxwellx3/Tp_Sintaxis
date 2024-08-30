@@ -129,6 +129,16 @@ class AnalizadorSintactico:
                     if padre_actual and self.nodoActual != padre_actual.hijos[0]:
                         indice_hijo_actual = padre_actual.hijos.index(self.nodoActual)
                         self.nodoActual = padre_actual.hijos[indice_hijo_actual - 1]
+                    elif padre_actual and self.nodoActual == padre_actual.hijos[0]:
+                        while padre_actual and self.nodoActual == padre_actual.hijos[0]:
+                            self.nodoActual = padre_actual
+                            padre_actual = self.nodoActual.getPadre()
+                        if not padre_actual:
+                            self.nodoActual = padre_actual
+                        else:
+                            # Nos movemos al hermano izquierdo del nodo actual
+                            indice_hijo_actual = padre_actual.hijos.index(self.nodoActual)
+                            self.nodoActual = padre_actual.hijos[indice_hijo_actual - 1]
                     token = self.Lexico.siguienteComponenteLexico({})
                 else:
                     print("Error sintáctico")
@@ -144,20 +154,3 @@ class AnalizadorSintactico:
                         self.nodoActual.agregarHijo(nodo_hijo)
                     self.pila.push(v)
                     self.nodoActual = self.nodoActual.getHijos()[-1]
-            # elif any(X in key and token[0] in key for key in self.TAS.keys):
-            #     regla = self.TAS[(X, token[0])]
-            #     for simbolo in reversed(regla):
-            #         if simbolo != 'epsilon':
-            #             self.pila.push(simbolo)
-
-            #         if simbolo in lex.Terminal:
-            #             if simbolo == token[0]:
-            #                 self.nodoActual.agregarHijo(ar.Nodo(self.Lexico.lexema))
-            #                 token = self.Lexico.siguienteComponenteLexico({})
-
-            #             else:
-            #                 print("Error sintáctico")
-            #                 resultado = -1  # Error
-            #         elif simbolo in lex.Variables:
-            #             self.nodoActual.agregarHijo(ar.Nodo(simbolo))
-            #             self.nodoActual = self.nodoActual.getHijos()[-1]

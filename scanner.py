@@ -74,7 +74,7 @@ operadores_relacionales = {
 
 Terminal = ['puntoycoma', 'asignar', 'coma', 'id', 'real', 'var', 'mientras', 'si', 'sino', 'leer', 'escribir', 'cadena', 'mas', 'menos', 'por', 'dividido', 'potencia', 'raiz', 'parentesisAbre', 'parentesisAbre', 'corcheteAbre', 'corcheteCierra', 'llaveAbre', 'llaveCierra', 'opOr', 'opAnd', 'opNeg', 'opRel', 'peso']
 
-Variables = ['prog', 'G', 'sent', 'variable', 'H', 'asing', 'expArit', 'X', 'A', 'Y', 'B', 'Z', 'C', 'ciclo', 'cond', 'sigCond', 'K', 'condIf', 'F', 'bloque', 'lect', 'escr']             
+Variables = ['prog', 'G', 'sent', 'variable', 'H', 'asig', 'expArit', 'X', 'A', 'Y', 'B', 'Z', 'C', 'ciclo', 'cond', 'sigCond', 'K', 'condIf', 'F', 'bloque', 'lect', 'escr']             
 
 
 ######################################################################################################
@@ -88,12 +88,13 @@ class Lexico():
         self.posNueva = 0 #guarda la posicion actual en la linea
         self.lineas = arc.leerLineas(archivo) #lee todas las lineas poniendo cada linea en un vector
         self.l = 0 #guarda la linea actual
+        self.ts = tsim.crearTS()
 
-    def siguienteComponenteLexico(self,ts): #devuelve componente lexico, y lexema
+    def siguienteComponenteLexico(self): #devuelve componente lexico, y lexema
         compLexico = 'ErrorLexico'
         lexema = ""
         linea = self.lineas[self.l]
-        ts = tsim.crearTS()
+        
        # Avanzar hasta el próximo componente léxico válido
         while self.l < len(self.lineas) and self.posNueva < len(self.lineas[self.l]) and self.lineas[self.l][self.posNueva] == " "  and self.lineas[self.l][self.posNueva] != "\n": #mientras sea espacio o salto de pagina avanza uno, sin salirse del rang
             self.posNueva += 1
@@ -103,6 +104,8 @@ class Lexico():
             self.l += 1
             linea = self.lineas[self.l]
             self.posNueva = 0
+
+        print("fila: ",self.l," columna: ",self.posNueva)
 
         # Si estamos al final del archivo, devolver el token de peso
         if not (self.l < (len(self.lineas) - 1)) and not(self.posNueva < len(self.lineas[self.l])):
@@ -128,11 +131,12 @@ class Lexico():
             else:
                 lexema = esID(linea, self.posNueva)
                 if lexema != "":
-                    if lexema in ts:
+                    if lexema in self.ts:
                         self.posNueva += len(lexema)
                         compLexico = lexema
                     else:
-                        ts = tsim.actualizarTS(ts, lexema, len(ts))
+                        # ts = tsim.actualizarTS(ts, lexema, len(ts))
+                        # tsim.actualizarTS(self.ts, lexema, len(self.ts))
                         self.posNueva += len(lexema)
                         compLexico = 'id'
                 else:
