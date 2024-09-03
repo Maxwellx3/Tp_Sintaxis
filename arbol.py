@@ -14,17 +14,11 @@ class Nodo:
 
             # Devuelve True si el nodo es una hoja, False si no lo es
     def esHoja(self):
-        if self.hijos == []:
-            return True
-        else:
-            return False
+        return not self.hijos
 
     # Devuuelve True si el nodo es la raiz, False si no lo es
     def esRaiz(self):
-        if self.padre == None:
-            return True
-        else:
-            return False
+        return self.padre is None
 
             # Metodos Getters
             # --------------------------------------------------------
@@ -41,46 +35,5 @@ class Nodo:
     def getDato(self):
         return self.dato
 
-            # Representador (solo para debugging)
-            # Representa el arbol en una estructura tabulada
-            # se llama solo con escribir el nombre del objeto
-
-
-    def __repr__(self, mem=''):
-        dato = self.getDato()
-        ret = dato + '\n'
-        if self.esRaiz():
-            ret = '\n' + dato + '\n'
-        esp = ''
-        esq = ''
-        hijos = self.getHijos()
-        if self.esRaiz():
-            for hijo in hijos:
-                if hijo != hijos[-1]:
-                    esq = '╠═'
-                    esp = '║ '
-                else:
-                    esq = '╚═'
-                    esp = '  '
-                ret += mem + esq + hijo.__repr__(esp)
-        else:
-            if not self.esHoja():  # si tengo hijos
-                if self == self.getPadre().getHijos()[-1]:
-                    esp = '  '
-                else:
-                    esp = '║ '
-                for hijo in hijos:
-                    if hijo == hijos[-1]:
-                        esq = '╚═'
-                        esp = '  '
-                    else:
-                        esq = '╠═'
-                        esp = '║ '
-                    ret += mem + esq + hijo.__repr__(mem + esp)
-        return ret
-
-    def mostrar(self,espacios= ''):
-        print(espacios,self.dato,"\n")
-        espacios =espacios+'  '
-        for h in self.hijos:
-            h.mostrar(espacios)
+    def __repr__(self):
+        return f"{self.dato}"

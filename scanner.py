@@ -14,65 +14,8 @@ operadores_relacionales = {
     "menor": 1,
     "mayor": 1,
 }
-# #Terminales
-# asignar = "asignar"
-# opAnd = "opAnd"
-# opNeg = "opNeg"
-# opOr = "opOr"
-# opRel = "opRel"
-# mas = "mas"
-# menos = "menos"
-# por = "por"
-# dividido = "dividido"
-# potencia = "potencia"
-# raiz = "raiz"
-# puntoycoma= "puntoycoma"
-# coma = "coma"
-# punto = "punto"
-# parentesisAbre = "parentesisAbre"
-# parentesisCierra = "parentesisCierra"
-# corcheteAbre = "corcheteAbre"
-# corcheteCierra = "corcheteCierra"
-# llaveAbre = "llaveAbre"
-# llaveCierra = "llaveCierra"
-# cadena = "cadena"
-# LEER = "leer"
-# ESCRIBIR = "escribir"
-# MIENTRAS = "mientras"
-# SI = "si"
-# SINO = "sino"
-# real = "real"
-# id = "id"
-# ErrorLexico = "ErrorLexico"
 
-# #Variables
-# G = "G"
-# H = "H"
-# J = "J"
-# F = "F"
-# K = "K"
-# X = "X"
-# Y = "Y"
-# Z = "Z"
-# A = "A"
-# B = "B"
-# C = "C"
-# prog = "PROGRAMA"
-# sent = "SENTENCIA"
-# variable = "VAR"
-# asing = "ASIGNACION"
-# expArit = "EXPARIT"
-# ciclo = "CICLO"
-# cond = "CONDICION"
-# sigCond = "SIGCONDICION"
-# condIf = "CONDICIONALIF"
-# bloque = "BLOQUE"
-# lect = "LECTURA"
-# escr = "ESCRITURA"
-# epsilon = "epsilon"
-# peso = "peso"
-
-Terminal = ['puntoycoma', 'asignar', 'coma', 'id', 'real', 'var', 'mientras', 'si', 'sino', 'leer', 'escribir', 'cadena', 'mas', 'menos', 'por', 'dividido', 'potencia', 'raiz', 'parentesisAbre', 'parentesisAbre', 'corcheteAbre', 'corcheteCierra', 'llaveAbre', 'llaveCierra', 'opOr', 'opAnd', 'opNeg', 'opRel', 'peso']
+Terminal = ['puntoycoma', 'asignar', 'coma', 'id', 'real', 'var', 'mientras', 'si', 'sino', 'leer', 'escribir', 'cadena', 'mas', 'menos', 'por', 'dividido', 'potencia', 'raiz', 'parentesisAbre', 'parentesisCierra', 'parentesisAbre', 'corcheteAbre', 'corcheteCierra', 'llaveAbre', 'llaveCierra', 'opOr', 'opAnd', 'opNeg', 'opRel', 'peso', 'epsilon']
 
 Variables = ['prog', 'G', 'sent', 'variable', 'H', 'asig', 'expArit', 'X', 'A', 'Y', 'B', 'Z', 'C', 'ciclo', 'cond', 'sigCond', 'K', 'condIf', 'F', 'bloque', 'lect', 'escr']             
 
@@ -105,7 +48,7 @@ class Lexico():
             linea = self.lineas[self.l]
             self.posNueva = 0
 
-        print("fila: ",self.l," columna: ",self.posNueva)
+        # print("fila: ",self.l," columna: ",self.posNueva)
 
         # Si estamos al final del archivo, devolver el token de peso
         if not (self.l < (len(self.lineas) - 1)) and not(self.posNueva < len(self.lineas[self.l])):
@@ -171,62 +114,6 @@ def simbolo1(linea: str, posicion: int) -> bool:
     if aux in {'=', '+', '*', '/', ';', ',', '(', ')', '[', ']'}:
         simb = True
     return simb
-
-def simboloID(aux: str) -> int:
-    if aux in string.ascii_letters:
-        return 0
-    elif aux in string.digits:
-        return 1
-    elif aux == "_":
-        return 2
-    else:
-        return 3
-
-def simbCONS(Car: str) -> int:
-    if Car in string.digits:
-        return 0
-    elif Car == '-':
-        return 1
-    elif Car == '.':
-        return 2
-    else:
-        return 3
-
-def simbCAD(car: str) -> int:
-    if car == "'":
-        return 0
-    else:
-        return 1
-
-def esCADENA(linea: str, pos: int) -> str:
-    q0 = 0
-    F = [2]
-    delta = [None] * 4
-    for i in range(4):
-        delta[i] = [None] * 2
-    delta[0][0] = 1
-    delta[0][1] = 3
-    delta[1][0] = 2
-    delta[1][1] = 1
-    delta[2][0] = 3
-    delta[2][1] = 3
-    delta[3][0] = 3
-    delta[3][1] = 3
-    auxControl = pos
-    estado = q0
-    lexema = ''
-    T = arc.leerCaracter(linea, auxControl)
-    while estado != 3  and auxControl < len(linea)  and T!="\n" and (estado not in F):
-        estado = delta[estado][simbCAD(T)]
-        if estado != 3:
-            lexema = lexema + T
-            auxControl = auxControl + 1
-            T = arc.leerCaracter(linea, auxControl)
-    if estado in F:
-        pos = auxControl
-        return lexema
-    else:
-        return ""
 
 def esSimbolo(linea: str, posicion: int) -> str:
     aux = linea[posicion]
@@ -439,4 +326,3 @@ def esCADENA(linea: str, pos: int)-> str:
         return lexema
     else:
         return ""
-

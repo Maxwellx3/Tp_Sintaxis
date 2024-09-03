@@ -2,6 +2,10 @@ import scanner
 import tablaDeSimbolos as tsim
 
     # Abrir el archivo
+lista = scanner.Variables
+X = 'prog'
+if X in lista:
+    print(lista)
 with open("prueba.txt", "r") as archivo:
         # Instanciar el analizador léxico con el objeto de archivo
         lexico = scanner.Lexico(archivo)
