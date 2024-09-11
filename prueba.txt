@@ -1,5 +1,5 @@
-var x, y;
-leer('Ingrese el valor de x: ', x);
-leer('Ingrese el valor de y: ', y);
-x : x + y;
-escribir('El resultado de la suma es: ', x);
+var x, y, z;
+x: 3;
+y: 5;
+z : x + y;
+escribir('El resultado de la suma es: ', z);

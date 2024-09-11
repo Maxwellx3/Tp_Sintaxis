@@ -29,11 +29,13 @@ class Nodo:
             # Devuelve un array con todos los hijos del nodo
     def getHijos(self):
         return self.hijos
+    
+    def getRaiz(self):
+        nodo_actual = self
+        while nodo_actual.padre is not None:
+            nodo_actual = nodo_actual.padre
+        return nodo_actual
 
             # Devuelve el dato del nodo en crudo
-            # Como siempre usamos strings como dato, devuelve String
-    def getDato(self):
-        return self.dato
-
     def __repr__(self):
         return f"{self.dato}"
