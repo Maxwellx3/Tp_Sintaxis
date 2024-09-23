@@ -1,5 +1,5 @@
-var x, y, z;
-x: 3;
-y: 5;
-z : x + y;
-escribir('El resultado de la suma es: ', z);
+var x, y;
+x : 1;
+y : 8;
+mientras x < y [x:x+5;];
+escribir('El resultado es: ', x);

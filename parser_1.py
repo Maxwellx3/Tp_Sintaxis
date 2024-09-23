@@ -63,8 +63,9 @@ class AnalizadorSintactico():
             elif X in lex.Terminal:
                 if (X == token[0]) or (X == "epsilon"):
                     padre_actual = self.nodoActual.getPadre()
-                    if self.nodoActual.dato in ["id", "real"]:
+                    if self.nodoActual.dato in ["id", "real", "cadena", "opRel"]:
                         self.nodoActual.dato = (self.nodoActual.dato, token[1])
+                        # print(self.nodoActual.dato)
                     if padre_actual and self.nodoActual != padre_actual.hijos[0]:
                         indice_hijo_actual = padre_actual.hijos.index(self.nodoActual)
                         self.nodoActual = padre_actual.hijos[indice_hijo_actual - 1]
@@ -91,13 +92,8 @@ class AnalizadorSintactico():
                 else:
                     for dato in v:
                         nodo_hijo = ar.Nodo(dato)
-                        # if (dato == "id") or (dato == "real"):
-                        #     nodo_hijo = ar.Nodo((dato,token[1]))
-                        # else:
-                        #     nodo_hijo = ar.Nodo(dato)
                         self.nodoActual.agregarHijo(nodo_hijo)
                     self.nodoActual = self.nodoActual.getHijos()[-1]
-                    # print("Nodo actual: ",self.nodoActual)
                     self.pila.push(v)
         # return self.arbol
             # print("Token: ",token[0],",", token[1])

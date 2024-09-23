@@ -1,6 +1,6 @@
 ,puntoycoma,asignar,coma,id,real,var,mientras,si,sino,leer,escribir,cadena,mas,menos,por,dividido,potencia,raiz,parentesisAbre,parentesisCierra,corcheteAbre,corcheteCierra,llaveAbre,llaveCierra,opOr,opAnd,opNeg,opRel,peso
 prog,,,,"sent,puntoycoma,G",,"sent,puntoycoma,G","sent,puntoycoma,G","sent,puntoycoma,G",,"sent,puntoycoma,G","sent,puntoycoma,G",,,,,,,,,,,,,,,,,,
-G,,,,"sent,puntoycoma,G",,"sent,puntoycoma,G","sent,puntoycoma,G","sent,puntoycoma,G",,"sent,puntoycoma,G","sent,puntoycoma,G",,,,,,,,,,,,,,,,,,epsilon
+G,,,,"sent,puntoycoma,G",,"sent,puntoycoma,G","sent,puntoycoma,G","sent,puntoycoma,G",,"sent,puntoycoma,G","sent,puntoycoma,G",,,,,,,,,,,epsilon,,,,,,,epsilon
 sent,,,,asig,,"var,variable",ciclo,condIf,,lect,escr,,,,,,,,,,,,,,,,,,
 variable,,,,"id,H",,,,,,,,,,,,,,,,,,,,,,,,,
 H,epsilon,,"coma,id,H",,,,,,,,,,,,,,,,,,,,,,,,,,

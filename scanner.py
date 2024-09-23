@@ -62,15 +62,19 @@ class Lexico():
         else:
             if simbolo(linea, self.posNueva):
                 compLexico = esSimbolo(linea, self.posNueva)
-                longitud_operador = operadores_relacionales.get(compLexico, 0)
-                if longitud_operador > 0:
-                    lexema = linea[self.posNueva:self.posNueva + longitud_operador]
-                    self.posNueva += longitud_operador
-                else:           # Si no es un operador relacional, se procesa como antes   
-                    lexema = linea[self.posNueva]
-                    self.posNueva += 1
-                if compLexico in operadores_relacionales:
-                    compLexico = 'opRel'
+                if compLexico in ["potencia", "raiz"]:
+                    lexema = linea[self.posNueva:self.posNueva + 2]
+                    self.posNueva += 2
+                else:
+                    longitud_operador = operadores_relacionales.get(compLexico, 0)
+                    if longitud_operador > 0:
+                        lexema = linea[self.posNueva:self.posNueva + longitud_operador]
+                        self.posNueva += longitud_operador
+                    else:           # Si no es un operador relacional, se procesa como antes   
+                        lexema = linea[self.posNueva]
+                        self.posNueva += 1
+                    if compLexico in operadores_relacionales:
+                        compLexico = 'opRel'
             else:
                 lexema = esID(linea, self.posNueva)
                 if lexema != "":
@@ -87,6 +91,7 @@ class Lexico():
                     if lexema != "":
                         self.posNueva += len(lexema)
                         compLexico = 'cadena'
+                        lexema = lexema.strip("'")
                     if compLexico == 'ErrorLexico':
                         print("En la linea:", self.l," Posición:",self.posNueva, "se encuentra un error lexico.")
         vector = [compLexico, lexema]
